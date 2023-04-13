@@ -19,7 +19,8 @@ class CreateProductsTable extends Migration
             $table->string('Name');
             $table->decimal('price');
             $table->text('description');
-            $table->string('Category');
+            $table->integer('category_id')->unsigned()->index()->nullable();
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->integer('UnitsInStock');
             $table->timestamps();
         });

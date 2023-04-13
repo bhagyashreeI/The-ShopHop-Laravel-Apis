@@ -1,6 +1,11 @@
 <?php
 use Illuminate\Http\Request;
 
+header('Access-Control-Allow-Origin: *');
+//Access-Control-Allow-Origin: *
+header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
+header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
+
 Route::group(['prefix' => 'auth'], function () {
 
     Route::post('login', 'AuthController@login')->name('login');
@@ -11,8 +16,9 @@ Route::group(['prefix' => 'auth'], function () {
     });
 
 });
-
-Route::apiResource('products', 'ProductController')->except(['update', 'store', 'destroy']);
+Route::apiResource('categories', 'CategoryController')->except(['update', 'store', 'destroy']);
+Route::get('products', 'ProductController@index');
+Route::get('productsbycategory/{cat_id}', 'ProductController@productsByCategoryId');
 Route::apiResource('carts', 'CartController')->except(['update', 'index']);
 Route::apiResource('orders', 'OrderController')->except(['update', 'destroy','store'])->middleware('auth:api');
 Route::post('/carts/{cart}', 'CartController@addProducts');

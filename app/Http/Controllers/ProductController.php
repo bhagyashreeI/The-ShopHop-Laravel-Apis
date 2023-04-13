@@ -20,6 +20,11 @@ class ProductController extends Controller
       return new ProductCollection(Product::all());
     }
 
+    public function productsByCategoryId($cat_id)
+    {
+      return new ProductCollection(Product::where('category_id',$cat_id)->get());
+    }
+
     // /**
     //  * Store a newly created resource in storage.
     //  *
