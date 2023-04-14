@@ -12,11 +12,30 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CartController extends Controller
+class UserCartController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
 
     /**
-     * Store a newly created Cart in storage and return the data to the user.
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -41,29 +60,21 @@ class CartController extends Controller
 
     }
 
+
     /**
-     * Display the specified Cart.
+     * Display the specified resource.
      *
-     * @param  \App\Cart  $cart
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Cart $cart, Request $request)
+    public function show($cartkey)
     {
-        $validator = Validator::make($request->all(), [
-            'cartKey' => 'required',
-        ]);
-
-        if ($validator->fails()) {
+        $key = $cartkey;
+        $cart = Cart::where(['key'=>$key])->first();
+        if ($cart->key == $key) {
             return response()->json([
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        $cartKey = $request->input('cartKey');
-        if ($cart->key == $cartKey) {
-            return response()->json([
-                'cart' => $cart->id,
-                'Items in Cart' => new CartItemCollection($cart->items),
+                'cartId' => $cart->id,
+                'cartItems' => new CartItemCollection($cart->items),
             ], 200);
 
         } else {
@@ -76,24 +87,39 @@ class CartController extends Controller
     }
 
     /**
-     * Remove the specified Cart from storage.
+     * Show the form for editing the specified resource.
      *
-     * @param  \App\Cart  $cart
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cart $cart, Request $request)
+    public function edit($id)
     {
-        $validator = Validator::make($request->all(), [
-            'cartKey' => 'required',
-        ]);
+        //
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 400);
-        }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
 
-        $cartKey = $request->input('cartKey');
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Cart $cart, $id)
+    {
+    
+
+        $cartKey = $id;
 
         if ($cart->key == $cartKey) {
             $cart->delete();
@@ -107,13 +133,6 @@ class CartController extends Controller
 
     }
 
-    /**
-     * Adds Products to the given Cart;
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cart  $cart
-     * @return void
-     */
     public function addProducts(Cart $cart, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -132,8 +151,11 @@ class CartController extends Controller
         $productID = $request->input('productID');
         $quantity = $request->input('quantity');
 
+         $key = $request['cartKey'];
+        $cart = Cart::where(['key'=>$key])->first();
+
         //Check if the CarKey is Valid
-        if ($cart->key == $cartKey) {
+        
             //Check if the proudct exist or return 404 not found.
             try { $Product = Product::findOrFail($productID);} catch (ModelNotFoundException $e) {
                 return response()->json([
@@ -152,12 +174,7 @@ class CartController extends Controller
 
             return response()->json(['message' => 'The Cart was updated with the given product information successfully'], 200);
 
-        } else {
-
-            return response()->json([
-                'message' => 'The CarKey you provided does not match the Cart Key for this Cart.',
-            ], 400);
-        }
+        
 
     }
 

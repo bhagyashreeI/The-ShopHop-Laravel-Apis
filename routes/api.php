@@ -19,7 +19,13 @@ Route::group(['prefix' => 'auth'], function () {
 Route::apiResource('categories', 'CategoryController')->except(['update', 'store', 'destroy']);
 Route::get('products', 'ProductController@index');
 Route::get('productsbycategory/{cat_id}', 'ProductController@productsByCategoryId');
-Route::apiResource('carts', 'CartController')->except(['update', 'index']);
+//Route::apiResource('carts', 'CartController')->except(['update', 'index']);
 Route::apiResource('orders', 'OrderController')->except(['update', 'destroy','store'])->middleware('auth:api');
-Route::post('/carts/{cart}', 'CartController@addProducts');
-Route::post('/carts/{cart}/checkout', 'CartController@checkout');
+//Route::post('/carts/{cart}', 'CartController@addProducts');
+//Route::post('/carts/{cart}/checkout', 'CartController@checkout');
+Route::apiResource('demo', 'DemoController')->except(['update', 'index']);
+//Route::apiResource('ucarts', 'UserCartController');
+Route::post('create-cart','UserCartController@store');
+Route::get('get-cart/{cartkey}','UserCartController@show');
+Route::post('addProduct', 'UserCartController@addProducts');
+Route::post('/ucarts/{ucart}/checkout', 'UserCartController@checkout');
