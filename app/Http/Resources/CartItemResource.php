@@ -20,9 +20,11 @@ class CartItemResource extends JsonResource
        $product = Product::find($this->product_id);
      
         return [
+            'CartItemId' => $this->id,
             'productID' => $this->product_id,
             'SKU' => $product->sku,
             'price' => $product->price,
+            'picture'=>$product->image==''?'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png':$product->image,
             'Name' => $product->Name,
             'Quantity' => $this->quantity,
         ];
